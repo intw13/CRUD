@@ -8,6 +8,7 @@
 
 ## ⚙️ 개발 환경
   - JAVA 11
+  - Tomcat 9
   - JSP
   - JAVASCRIPT
   - jQuery (Ajax)
