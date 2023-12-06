@@ -51,9 +51,19 @@ function idCheck() {
 		success: function(result) {
 			if (result == '0') {
 				alert("사용 가능한 ID 입니다.")
+				// 만약 사용 가능한 경우, create-btn 클래스에서 disabled 제거
+				 $(".create-btn").removeClass("disabled");
 			} else {
 				alert("이미 사용중인 ID 입니다.")
+				// 이미 사용 중인 경우, create-btn 클래스에 disabled 추가
+				 $(".create-btn").addClass("disabled");
 			}
 		}
 	})
 }
+// 아이디값 변경되면 가입 버튼 비활성화
+$(document).ready(function() {
+    $("#userId").on("input", function() {
+        $(".create-btn").addClass("disabled");
+    });
+});
