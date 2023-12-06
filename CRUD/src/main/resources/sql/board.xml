@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.mapper.BoardMapper">
+   
+   <select id = "boardCount" parameterType="com.vo.Search" resultType= "Integer">
+	select count(*) from tb_board_01_nt
+		<where>
+			and useFlag="Y"
+			<choose>
+	 			<when test="type != null and type.equals('title')">
+                         and title like CONCAT('%', #{keyword}, '%')
+                 </when>
+                 <when test="type != null and type.equals('writedid')">
+                         and writedid like CONCAT('%', #{keyword}, '%')
+                 </when>
+			</choose>
+		</where> 
+</select>
+
+<select id="boardList" parameterType="com.vo.Search" resultType="com.vo.Board">
+        select *
+            from (select @rownum:=@rownum+1 as num ,n.*
+                from( select *
+                    from tb_board_01_nt
+            <where>
+                 <choose>
+                         <when test="type != null and type.equals('title')">
+                                 and title like CONCAT('%', #{keyword}, '%')
+                         </when>
+                         <when test="type != null and type.equals('writedid')">
+                                 and writedid like CONCAT('%', #{keyword}, '%')
+                         </when>
+                 </choose>
+             and useFlag ='Y'
+            </where>
+            order by regdate desc)n
+            where (@rownum:=0)=0)num
+            where num.num between 1 + (#{pageInt} - 1 ) * 10 and #{pageInt} * 10
+</select>
+
+<select id="boardView" resultType="com.vo.Board" parameterType="Integer">
+    select n.content_id, n.title, n.writedid, n.content, n.regdate,n.hit,n.filepath
+    	from tb_board_01_nt n
+    	inner join tb_user_01_nt c on n.writedid = c.userId
+    	where n.content_id = #{param} and n.useFlag = 'Y'
+</select>
+
+<update id = "views" parameterType = "com.vo.Board">
+	update tb_board_01_nt set hit = hit + 1 where content_id = #{content_id}
+</update>
+
+<select id = "commentList" parameterType = "Integer" resultType = "com.vo.Comment">
+	select * from tb_board_02_nt
+		where content_id = #{param} and userFlag= 'Y'
+</select>
+
+<insert id="commentWrite" parameterType = "com.vo.Comment">
+	insert into tb_board_02_nt(content_id, content, writedid) values (#{content_id}, #{content}, #{writedid})
+</insert>
+
+<update id = "commentDelete" parameterType = "Integer">
+	update tb_board_02_nt set userFlag = 'N' where comment_id = #{param}
+</update>
+
+<update id = "boardDelete" parameterType = "Integer">
+	update tb_board_01_nt set useFlag = 'N' where content_id = #{param}
+</update>
+
+<update id = "boardModify" parameterType = "com.vo.Board">
+	update tb_board_01_nt set content = #{content}, filepath = #{filepath} where content_id  = #{content_id}
+</update>
+
+<insert id ="boardWrite" parameterType = "com.vo.Board">
+	insert into tb_board_01_nt(title,writedid,content,filepath,boardid) values(#{title},#{writedid},#{content},#{filepath},'2')
+</insert>
+
+</mapper>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.mapper.UserMapper">
+
+    <select id="loginCheck" parameterType="com.vo.User" resultType="com.vo.User" >
+        select *
+			from tb_user_01_nt u
+		where u.userFlag = 'Y'
+    		and u.userId = #{userId}
+    		and u.userPass = SHA2(#{userPass}, 256)
+    </select>
+    
+    <insert id ="signUp" parameterType="com.vo.User">
+    	insert into tb_user_01_nt (userId, userPass, userName, userEmail, gender)
+		values(#{userId},SHA2(#{userPass},256),#{userName},#{userEmail},#{gender})
+    </insert>
+    
+    <select id="idCheck" parameterType= "String" resultType ="Integer">
+    	select count(*) from tb_user_01_nt where userId = #{id}
+    </select>
+   
+</mapper>
+
