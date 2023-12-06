@@ -52,19 +52,20 @@ public class UserController {
         return "/user/signup";
     }
 
+    // 회원가입
     @PostMapping("/signup")
     public String register2(User user) throws Exception {
-
+    	
         service.signUp(user);
-        service.loginCheck(user);
 
         return "redirect:/";
     }
-
+    // 중복확인
     @PostMapping("/idCheck")
     @ResponseBody
     public int idCheck(@RequestParam String userId) throws Exception {
-
+    	
+    	// 값 자바스크립트에 넘김
         return service.idCheck(userId);
     }
 }
