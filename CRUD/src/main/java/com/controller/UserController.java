@@ -14,7 +14,7 @@ import com.service.UserService;
 import com.vo.User;
 
 @Controller
-public class LoginController {
+public class UserController {
 
     @Autowired
     UserService service;
